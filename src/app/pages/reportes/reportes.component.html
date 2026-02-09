@@ -1,0 +1,72 @@
+<div class="container">
+    <h2 class="title">Reporte de Cuentas</h2>
+    <div class="card">
+        <h3>Filtros</h3>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Cliente</label>
+                <select [(ngModel)]="filtros.clienteId">
+                    <option value="">Todos</option>
+                    <option *ngFor="let c of clientes" [value]="c.clienteId">
+                        {{ c.nombre }}
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tipo de Cuenta</label>
+                <select [(ngModel)]="filtros.tipoCuenta">
+                    <option value="">Todas</option>
+                    <option value="Ahorros">Ahorros</option>
+                    <option value="Corriente">Corriente</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Desde</label>
+                <input type="date" [(ngModel)]="filtros.fechaInicio">
+            </div>
+            <div class="form-group">
+                <label>Hasta</label>
+                <input type="date" [(ngModel)]="filtros.fechaFin">
+            </div>
+        </div>
+        <div class="actions">
+            <button class="btn-primary" (click)="generarReporte()">
+                Generar Reporte
+            </button>
+            <button class="btn-secondary" (click)="limpiarFiltros()">
+                Limpiar
+            </button>
+        </div>
+    </div>
+    <div class="card" *ngIf="reporte.length > 0">
+        <h3>Resultados</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>N° Cuenta</th>
+                    <th>Tipo</th>
+                    <th>Cliente</th>
+                    <th>Saldo</th>
+                    <th>Fecha Apertura</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of detalleReporte">
+                    <td>{{ item.numeroCuenta }}</td>
+                    <td>{{ item.tipoCuenta }}</td>
+                    <td>{{ item.clienteNombre }}</td>
+                    <td>{{ item.saldoActual | currency }}</td>
+                    <td>{{ item.fechaApertura | date }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="actions">
+            <button class="btn-pdf" (click)="descargarPdf()">
+                Descargar PDF
+            </button>
+            <button class="btn-excel">
+                Descargar Excel
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,106 @@
+<div class="header">
+    <h1>Movimientos</h1>
+    <button 
+        class="btn-warning"
+        (click)="
+            limpiarMovimiento();
+            abrirModal()
+        "
+    >Nuevo</button>
+</div>
+
+<input 
+    class="search" 
+    placeholder="Buscar Cliente"
+    [(ngModel)]="filtroBusqueda"
+    (input)="filtarBusqueda()"
+>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Número Cuenta</th>
+            <th>Tipo</th>
+            <th>Saldo Inicial</th>
+            <th>Movimiento</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let movimiento of listaFiltrada">
+            <td>{{ movimiento.cuenta.numeroCuenta }}</td>
+            <td>{{ movimiento.cuenta.tipoCuenta }}</td>
+            <td>{{ movimiento.cuenta.saldoInicial | currency: 'USD' }}</td>
+            <td>{{ movimiento.tipoMovimiento }} de {{ movimiento.valor | currency: 'USD' }}</td>
+            <td>
+                <button
+                    class="btn-primary"
+                    (click)="
+                        abrirModal(); 
+                        asignarMovimiento(movimiento)
+                    "
+                >Actualizar</button>&nbsp;
+                <button 
+                    class="btn-danger"
+                    (click)="eliminarMovimiento(movimiento.id)"
+                >Eliminar</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!--Agregar/Modificar Movimiento-->
+<div 
+    *ngIf="mostrarModal"
+    class="modal-backdrop"
+>
+    <div class="modal">
+        <h2>{{ movimiento.id ? 'Editar' : 'Nuevo' }} Movimiento</h2>
+        <form #f="ngForm" (ngSubmit)="movimiento.id ? actualizarMovimiento(f.value) : crearMovimiento(f.value)">
+            <input 
+                type="number" 
+                name="numeroCuenta" 
+                [(ngModel)]="movimiento.cuenta.numeroCuenta"
+                placeholder="Número Cuenta"
+                required
+            >
+            <input 
+                type="text" 
+                name="tipoCuenta" 
+                [(ngModel)]="movimiento.cuenta.tipoCuenta"
+                placeholder="Tipo Cuenta"
+                required
+            >
+            <input 
+                type="text" 
+                name="tipoMovimiento" 
+                [(ngModel)]="movimiento.tipoMovimiento"
+                placeholder="Tipo Movimiento"
+                required
+            >
+            <input 
+                type="number" 
+                name="valor" 
+                [(ngModel)]="movimiento.valor"
+                placeholder="Valor"
+                required
+            >
+            <div class="actions">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="cerrarModal()"
+                >
+                    Cancelar
+                </button>
+                <button
+                    type="submit"
+                    class="btn btn-warning"
+                    [disabled]="f.invalid"
+                >
+                    {{ movimiento.id ? 'Editar' : 'Guardar' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

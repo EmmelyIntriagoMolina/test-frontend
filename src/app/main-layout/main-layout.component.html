@@ -1,0 +1,14 @@
+<div class="app">
+    <aside class="sidebar">
+        <h2 class="logo">BANCO</h2>
+        <nav class="menu">
+            <button routerLink="/clientes" routerLinkActive="active">Clientes</button>
+            <button routerLink="/cuentas" routerLinkActive="active">Cuentas</button>
+            <button routerLink="/movimientos" routerLinkActive="active">Movimientos</button>
+            <button routerLink="/reportes" routerLinkActive="active">Reportes</button>
+        </nav>
+    </aside>
+    <main class="content">
+        <router-outlet></router-outlet>
+    </main>
+</div>

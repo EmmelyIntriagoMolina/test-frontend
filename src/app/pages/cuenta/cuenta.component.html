@@ -1,0 +1,121 @@
+<div class="header">
+    <h1>Cuentas</h1>
+    <button 
+        class="btn-warning"
+        (click)="
+            limpiarCuenta();
+            abrirModal();
+            actualizarCuentaBandera = false;
+        "
+    >Nuevo</button>
+</div>
+
+<input 
+    class="search" 
+    placeholder="Buscar Cuenta"
+    [(ngModel)]="filtroBusqueda"
+    (input)="filtarBusqueda()"
+>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Número Cuenta</th>
+            <th>Tipo</th>
+            <th>Saldo</th>
+            <th>Cliente</th>
+            <th>Estado</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let cuenta of listaFiltrada">
+            <td>{{ cuenta.numeroCuenta }}</td>
+            <td>{{ cuenta.tipoCuenta }}</td>
+            <td>{{ cuenta.saldoInicial | currency: 'USD' }}</td>
+            <td>{{ cuenta.cliente.nombre }}</td>
+            <td>
+                <input type="checkbox" [(ngModel)]="cuenta.estado">
+            </td>
+            <td>
+                <button 
+                    class="btn-primary"
+                    (click)="
+                        abrirModal(); 
+                        asignarCuenta(cuenta);
+                        actualizarCuentaBandera = true;
+                    "
+                >Actualizar</button>&nbsp;
+                <button 
+                    class="btn-danger"
+                    (click)="eliminarCuenta(cuenta.numeroCuenta)"
+                >Eliminar</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!--Agregar/Modificar Cuenta-->
+<div 
+    *ngIf="mostrarModal"
+    class="modal-backdrop"
+>
+    <div class="modal">
+        <h2>{{ actualizarCuentaBandera ? 'Editar' : 'Nueva' }} Cuenta</h2>
+        <form #f="ngForm" (ngSubmit)="actualizarCuentaBandera ? actualizarCuenta(f.value) : crearCuenta(f.value)">
+            <input 
+                type="number" 
+                name="numeroCuenta" 
+                [(ngModel)]="cuenta.numeroCuenta"
+                placeholder="Número Cuenta"
+                required
+            >
+            <input 
+                type="text" 
+                name="tipoCuenta" 
+                [(ngModel)]="cuenta.tipoCuenta"
+                placeholder="Tipo Cuenta"
+                required
+            >
+            <input 
+                type="number" 
+                name="saldoInicial" 
+                [(ngModel)]="cuenta.saldoInicial"
+                placeholder="Saldo Inicial"
+                required
+            >
+            <select
+                name="clienteId"
+                [(ngModel)]="clienteSeleccionado">
+                <option value="">Seleccione Cliente</option>
+                <option *ngFor="let cliente of listaClientes" [value]="cliente.clienteId">
+                  {{ cliente.nombre }}
+                </option>
+            </select>
+            <label class="checkbox">
+                Estado:
+                <input 
+                    type="checkbox" 
+                    name="estado"
+                    [(ngModel)]="cuenta.estado"
+                >
+            </label>
+            <div class="actions">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="cerrarModal()"
+                >
+                    Cancelar
+                </button>
+                <button
+                    type="submit"
+                    class="btn btn-warning"
+                    [disabled]="f.invalid"
+                >
+                    {{ actualizarCuentaBandera ? 'Editar' : 'Guardar' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+.container {
+    padding: 20px;
+}
+
+.title {
+    margin-bottom: 20px;
+}
+
+.card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn-primary {
+    background: #1976d2;
+    color: white;
+}
+
+.btn-secondary {
+    background: #ccc;
+}
+
+.btn-pdf {
+    background: #d32f2f;
+    color: white;
+}
+
+.btn-excel {
+    background: #388e3c;
+    color: white;
+}

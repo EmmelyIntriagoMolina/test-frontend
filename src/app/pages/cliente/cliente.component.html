@@ -1,0 +1,118 @@
+<div class="header">
+    <h1>Clientes</h1>
+    <button 
+        class="btn-warning"
+        (click)="
+            limpiarCliente();
+            abrirModal()
+        "
+    >Nuevo</button>
+</div>
+
+<input 
+    class="search" 
+    placeholder="Buscar Cliente"
+    [(ngModel)]="filtroBusqueda"
+    (input)="filtarBusqueda()"
+>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombres</th>
+            <th>Dirección</th>
+            <th>Teléfono</th>
+            <th>Estado</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let cliente of listaFiltrada">
+            <td>{{ cliente.nombre }}</td>
+            <td>{{ cliente.direccion }}</td>
+            <td>{{ cliente.telefono }}</td>
+            <td>
+                <input type="checkbox" [(ngModel)]="cliente.estado" [disabled]="true">
+            </td>
+            <td>
+                <button 
+                    class="btn-primary"
+                    (click)="
+                        abrirModal(); 
+                        asignarCliente(cliente)
+                    "
+                >Actualizar</button>&nbsp;
+                <button 
+                    class="btn-danger"
+                    (click)="eliminarCliente(cliente.clienteId)"
+                >Eliminar</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!--Agregar/Modificar Cliente-->
+<div 
+    *ngIf="mostrarModal"
+    class="modal-backdrop"
+>
+    <div class="modal">
+        <h2>{{ cliente.clienteId ? 'Editar' : 'Nuevo' }} Cliente</h2>
+        <form #f="ngForm" (ngSubmit)="cliente.clienteId ? actualizarCliente(cliente) : crearCliente(f.value)">
+            <input 
+                type="text" 
+                name="nombre" 
+                [(ngModel)]="cliente.nombre"
+                placeholder="Nombre"
+                required
+            >
+            <input 
+                type="text" 
+                name="direccion" 
+                [(ngModel)]="cliente.direccion"
+                placeholder="Direccion"
+                required
+            >
+            <input 
+                type="text" 
+                name="telefono" 
+                [(ngModel)]="cliente.telefono"
+                placeholder="Direccion"
+                required
+            >
+            <input 
+                type="password" 
+                name="contrasena" 
+                [(ngModel)]="cliente.contrasena"
+                placeholder="Contraseña"
+                required
+            >
+
+            <label class="checkbox">
+                Estado:
+                <input 
+                    type="checkbox" 
+                    name="estado"
+                    [(ngModel)]="cliente.estado"
+                >
+            </label>
+
+            <div class="actions">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="cerrarModal()"
+                >
+                    Cancelar
+                </button>
+                <button
+                    type="submit"
+                    class="btn btn-warning"
+                    [disabled]="f.invalid"
+                >
+                    {{ cliente.clienteId ? 'Editar' : 'Nuevo' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
