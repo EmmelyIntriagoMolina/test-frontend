@@ -66,7 +66,6 @@ export class ClienteComponent implements OnInit {
       .actualizarCliente(cliente.clienteId,cliente)
       .then(async (resp: any) => {
         await Swal.fire('Success!', 'Cliente actualizado con éxito', 'success')
-        console.log(resp, 'resp')
         this.cliente = resp
         this.cerrarModal()
         this.obtenerClientes()

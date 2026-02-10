@@ -66,14 +66,4 @@ export class CuentaService {
         });
     });
   }
-  obtenerTipoCuentas() {
-    return new Promise((res, rej) => {
-      this.http
-        .get(`${this.url}/cuentas/tipo`, this.options)
-        .subscribe({
-          next: (resp) => res(resp),
-          error: (err) => rej(err),
-        });
-    });
-  }
 }

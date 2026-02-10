@@ -54,7 +54,6 @@ export class CuentaComponent implements OnInit {
       .then((resp: any) => {
         this.listaCuentas = resp
         this.listaFiltrada = [...this.listaCuentas]
-        console.log(resp)
       }).catch(async (error: Error) => {
         await Swal.fire('Oops!', error.message, 'error')
         console.log(error)

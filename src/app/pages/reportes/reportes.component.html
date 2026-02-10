@@ -38,25 +38,25 @@
             </button>
         </div>
     </div>
-    <div class="card" *ngIf="reporte.length > 0">
+    <div class="card" >
         <h3>Resultados</h3>
         <table class="table">
             <thead>
                 <tr>
+                    <th>Fecha</th>
                     <th>N° Cuenta</th>
-                    <th>Tipo</th>
                     <th>Cliente</th>
+                    <th>Movimiento</th>
                     <th>Saldo</th>
-                    <th>Fecha Apertura</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let item of detalleReporte">
+                    <td>{{ item.fecha | date: 'dd-MM-YYYY' }}</td>
                     <td>{{ item.numeroCuenta }}</td>
-                    <td>{{ item.tipoCuenta }}</td>
-                    <td>{{ item.clienteNombre }}</td>
-                    <td>{{ item.saldoActual | currency }}</td>
-                    <td>{{ item.fechaApertura | date }}</td>
+                    <td>{{ item.cliente }}</td>
+                    <td>{{ item.tipoMovimiento }} de {{ item.valor | currency: 'USD' }}</td>
+                    <td>{{ item.saldo | currency: 'USD' }}</td>
                 </tr>
             </tbody>
         </table>
@@ -64,7 +64,7 @@
             <button class="btn-pdf" (click)="descargarPdf()">
                 Descargar PDF
             </button>
-            <button class="btn-excel">
+            <button class="btn-excel" (click)="descargarExcel()">
                 Descargar Excel
             </button>
         </div>

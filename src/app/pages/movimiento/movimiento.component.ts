@@ -59,7 +59,6 @@ export class MovimientoComponent implements OnInit {
       .then((resp: any) => {
         this.listaMovimientos = resp
         this.listaFiltrada = [...this.listaMovimientos]
-        console.log(resp)
       }).catch(async (error: Error) => {
         await Swal.fire('Oops!', error.message, 'error')
         console.log(error)

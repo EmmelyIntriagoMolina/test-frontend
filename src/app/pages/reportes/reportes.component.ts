@@ -15,13 +15,13 @@ import { ClienteService } from '../cliente/service/cliente.service';
 export class ReportesComponent implements OnInit {
 
   clientes: any[] = [];
-  reporte: ReporteCuenta[] = [];
+  detalleReporte: ReporteCuenta[] = [];
 
   filtros: FiltrosReporte = {
-    clienteId: undefined,
+    clienteId: 0,
     tipoCuenta: '',
-    fechaInicio: '',
-    fechaFin: ''
+    fechaInicio: moment().format("YYYY-MM-DD"),
+    fechaFin: moment().format("YYYY-MM-DD")
   };
 
   cargando = false;
@@ -37,84 +37,80 @@ export class ReportesComponent implements OnInit {
 
   cargarClientes() {
     this._clienteService
-    .obtenerClientes()
-    .then((resp: any) => {
-      this.clientes = resp
-    }).catch((error) => {
-      Swal.fire('Error', 'No se pudieron cargar los clientes', 'error')
-    })
+      .obtenerClientes()
+      .then((resp: any) => {
+        this.clientes = resp
+      }).catch((error) => {
+        Swal.fire('Error', 'No se pudieron cargar los clientes', 'error')
+      })
   }
 
-  /*generarPDFReporte() {
-    Swal.fire({
-      title: 'Generando PDF...',
-      text: 'Esto podría tardar unos segundos',
-      footer: 'No cierres la ventana',
-      allowOutsideClick: false,
-      didOpen: async () => {
-        Swal.showLoading()
-        Swal.disableButtons()
-        this._reporteService
-        .generarPDFReporte( this.listaFiltrada )
-        .subscribe((resp: any) => {
-          Swal.close()
-          let blobUrl = URL.createObjectURL(resp);
-          const link: HTMLAnchorElement = document.createElement("a");
-          link.href = blobUrl;
-          link.download = `reporte.pdf`;
-          document.body.appendChild(link);
-          link.dispatchEvent(
-            new MouseEvent("click", {
-              bubbles: true,
-              cancelable: true,
-              view: window,
-            })
-          );
-        })
+  generarReporte() {
+    this.cargando = true
+    this._reporteService
+    .generarReporte(this.filtros)
+    .subscribe({
+      next: (data) => {
+        this.detalleReporte = data
+        this.cargando = false
+      },
+      error: (error) => {
+        console.log(error)
+        this.cargando = false
       }
     })
   }
-  generarExcelReporte() {
+  limpiarFiltros() {
+    this.filtros = {
+      clienteId: 0,
+      tipoCuenta: '',
+      fechaInicio: moment().format("YYYY-MM-DD"),
+      fechaFin: moment().format("YYYY-MM-DD")
+    }
+    this.detalleReporte = []
+  }
+
+  descargarPdf() {
+    this._reporteService
+    .descargarPdf(this.filtros)
+    .subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob)
+        const link: HTMLAnchorElement = document.createElement("a");
+        link.href = url;
+        link.download = `reporte.pdf`;
+        link.click();
+        window.URL.revokeObjectURL(url)
+      },
+      error: (error) => console.log(error)
+    })
+  }
+
+  descargarExcel() {
     let rows = []
     let cabecera = [
       "Fecha",
       "Cliente",
       "Número Cuenta",
-      "Tipo",
-      "Saldo Inicial",
-      "Estado",
       "Movimiento",
-      "Saldo Disponible",
+      "Saldo"
     ]
     rows.push(cabecera)
-    this.listaFiltrada.forEach((n) => {
+    this.detalleReporte.forEach((n) => {
       rows.push([
         n.fecha,
-        n.nombreCliente,
+        n.cliente,
         n.numeroCuenta,
-        n.tipoCuenta,
-        n.saldoInicial,
-        n.estado ? 'Activo' : 'Inactivo',
-        n.movimiento,
-        n.saldoDisponible,
+        `${n.tipoMovimiento} de $${n.valor}`,
+        n.saldo
       ])
     })
     let workbook = xlsx.utils.book_new();
     const ws: xlsx.WorkSheet = xlsx.utils.aoa_to_sheet(rows)
-    xlsx.utils.book_append_sheet(workbook, ws, 'Listado Facturas')
+    xlsx.utils.book_append_sheet(workbook, ws, 'Reporte Movimientos')
     ws["!cols"] = [
-      { wch: 10 }, { wch: 30 }, { wch: 10 }, { wch: 15 }, { wch: 10 }, 
-      { wch: 10 }, { wch: 10 }, { wch: 10 }
+      { wch: 10 }, { wch: 20 }, { wch: 15 }, { wch: 25 }, { wch: 10 }
     ]
     xlsx.writeFile(workbook, `reporte.xlsx`);
   }
-  configurarFiltros() {
-    this.listaFiltrada = this.detalleReporte.filter(r => {
-      return (
-        (!this.filtros.porCliente || r.idCliente == this.filtros.cliente) &&
-        (!this.filtros.porTipoCuenta || r.tipoCuenta == this.filtros.tipoCuenta) &&
-        (!this.filtros.porTipoMovimiento || r.tipoMovimiento == this.filtros.tipoMovimiento)
-      )
-    })
-  }*/
 }
